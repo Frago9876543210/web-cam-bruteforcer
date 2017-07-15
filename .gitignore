@@ -1,0 +1,8 @@
+#CLion files
+cmake-build-debug
+CMakeLists.txt
+.idea
+#build
+web-cam-bruteforcer
+#other files
+pictures
