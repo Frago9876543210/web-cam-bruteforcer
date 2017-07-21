@@ -12,12 +12,12 @@ Simple and convenient software for hacking other people's cameras.
 * Use `make` to build an application.
 
 ### Instructions for hacking cameras
-* Install masscan if you do not have one. Use `sudo apt-get install masscan`.
-* Get the ranges of the desired city or country.
+* Install masscan if you do not have it. Use `sudo apt-get install masscan`.
+* Get the ranges of your desired city or country.
 * Use masscan to find open ports. Usually cameras from hikvision use `port 8000`.
 * For example: `masscan -p8000 -iL ranges.txt --rate=1000 -oX scan.xml`.
-* Further through the regular expressions remove the extra from the file.
-* Now paste these addresses into the `ips.txt` file
+* Next, using regular expressions, remove the excess from the file.
+* Now paste these addresses into the `ips.txt` file.
 * Also you can expand my dictionary, which is in the `dictionary.txt` file
-* And now use `./web-cam-bruteforcer` to run. 
+* And now, use `./web-cam-bruteforcer` to run this application.
 * Enter the port on which you were searching for the camera, and I recommend 300-450 threads.
