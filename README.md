@@ -2,6 +2,8 @@
 
 Simple and convenient software for hacking other people's cameras.
 
+[Rewritten to C# for Windows](https://github.com/Frago9876543210/hikvision-bruteforcer)
+
 ### Warning
 ***So...***
 ***You will bear all responsibility. I do not call for these actions.***
